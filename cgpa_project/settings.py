@@ -16,12 +16,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'pXt_yOOrCz_qsb-mVo09TrME2vXq6ljKsNERa
 # 🔴 PRODUCTION FIX
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,cgpacal-lpdn.onrender.com').split(',')
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'c-calc.onrender.com').split(',')
 
 # CSRF fix for production
 CSRF_TRUSTED_ORIGINS = [
-    'https://cgpacal-lpdn.onrender.com',
-    'http://cgpacal-lpdn.onrender.com',
+    'https://c-calc.onrender.com',
+    'http://c-calc.onrender.com',
 ]
 
 
