@@ -14,7 +14,7 @@ services:
       - key: ALLOWED_HOSTS
         value: cgpacal-lpdn.onrender.com
       - key: DATABASE_URL
-        value: postgresql://neondb_owner:npg_i3Yqds0VbnPj@ep-wild-king-ane8zt0z-pooler.c-6.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+        value: postgresql://neondb_owner:npg_VEGQ8YcOSXi3@ep-green-dust-al541uxs-pooler.c-3.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
       - key: TWILIO_SID
         sync: false
       - key: TWILIO_AUTH_TOKEN
