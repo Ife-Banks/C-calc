@@ -12,8 +12,13 @@
 </head>
 <body>
 
-    <nav class="sidebar">
-        <div class="sidebar-brand">CGPA<span>Calc</span></div>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-brand">CGPA<span>Calc</span></div>
+            <button class="toggle-btn" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
         <div class="sidebar-nav">
             <a href="#" class="active"><i class="fas fa-th-large"></i> Dashboard</a>
             <a href="#courses"><i class="fas fa-book"></i> My Courses</a>
@@ -176,7 +181,7 @@
                                 <h4>Level {{ level_num }}</h4>
                             </div>
                             <div class="semester-row">
-                                {% for sem_name, sem_data in semesters %}
+                                {% for sem_name, sem_data in semesters.items %}
                                     {% if sem_data.courses %}
                                         <div class="semester-block">
                                             <h5>
@@ -212,6 +217,11 @@
     </main>
 
     <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
         const { jsPDF } = window.jspdf;
         let cgpa = {{ cgpa }};
 
