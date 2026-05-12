@@ -12,37 +12,17 @@
 </head>
 <body>
 
-    <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-brand">CGPA<span>Calc</span></div>
-            <button class="toggle-btn" onclick="toggleSidebar()">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-        <div class="sidebar-nav">
-            <a href="#" class="active"><i class="fas fa-th-large"></i> Dashboard</a>
-            <a href="#courses"><i class="fas fa-book"></i> My Courses</a>
-            <a href="#profile"><i class="fas fa-user"></i> Profile</a>
-            <a href="#add-course"><i class="fas fa-plus-circle"></i> Add Course</a>
-        </div>
-        <div class="sidebar-user">
-            <div class="info">
-                <div class="avatar">{{ username|make_list|first|upper }}</div>
-                <div class="name">{{ username }}</div>
-            </div>
-            <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i></a>
+    <nav class="top-nav">
+        <div class="brand">CGPA<span>Calc</span></div>
+        <div class="user-area">
+            <span class="name">{{ username }}</span>
+            <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
     </nav>
 
-    <main class="main">
-        {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                    <div class="message {{ message.tags }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
+    <div class="toast-container" id="toastContainer"></div>
 
+    <main class="main">
         <div class="page-header">
             <h1>Welcome, {{ student.full_name|default:username }}</h1>
         </div>
@@ -70,7 +50,7 @@
                 <h3><i class="fas fa-user-circle"></i> Student Profile</h3>
             </div>
             <div class="card-body">
-                <form method="POST" action="{% url 'save_student' %}">
+                <form method="POST" action="{% url 'save_student' %}" id="profileForm">
                     {% csrf_token %}
                     <div class="profile-grid">
                         <div class="form-group">
@@ -104,7 +84,7 @@
                 <h3><i class="fas fa-plus"></i> Add New Course</h3>
             </div>
             <div class="card-body">
-                <form method="POST" action="{% url 'add_course' %}">
+                <form method="POST" action="{% url 'add_course' %}" id="courseForm">
                     {% csrf_token %}
                     <div class="form-grid">
                         <div class="form-group">
@@ -217,10 +197,38 @@
     </main>
 
     <script>
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('collapsed');
+        function showToast(message, type) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
         }
+
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch(this.action, {
+                method: 'POST',
+                body: new FormData(this),
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            }).then(() => {
+                showToast('Profile saved successfully!', 'success');
+            });
+        });
+
+        document.getElementById('courseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch(this.action, {
+                method: 'POST',
+                body: new FormData(this),
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            }).then(() => {
+                showToast('Course added successfully!', 'success');
+                this.reset();
+                setTimeout(() => location.reload(), 500);
+            });
+        });
 
         const { jsPDF } = window.jspdf;
         let cgpa = {{ cgpa }};
