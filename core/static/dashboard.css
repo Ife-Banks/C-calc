@@ -390,8 +390,106 @@ body {
   gap: 16px;
 }
 
+@media (max-width: 1024px) {
+  .main {
+    padding: 20px;
+  }
+}
+
 @media (max-width: 768px) {
+  .top-nav {
+    padding: 12px 16px;
+  }
+
+  .top-nav .brand {
+    font-size: 17px;
+  }
+
+  .top-nav .user-area .name {
+    display: none;
+  }
+
+  .main {
+    padding: 16px;
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-card .value {
+    font-size: 26px;
+  }
+
+  .card-header {
+    padding: 16px;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .card-body {
+    padding: 16px;
+  }
+
   .semester-row {
     grid-template-columns: 1fr;
+  }
+
+  .level-section {
+    padding: 14px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .course-item {
+    grid-template-columns: 1fr 70px 40px 45px auto;
+    gap: 8px;
+    font-size: 13px;
+  }
+
+  .toast-container {
+    right: 10px;
+    left: 10px;
+    top: 70px;
+  }
+
+  .toast {
+    min-width: auto;
+    font-size: 13px;
+    padding: 12px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .course-item {
+    grid-template-columns: 1fr 60px 35px 40px auto;
+    gap: 6px;
+    font-size: 12px;
+    padding: 8px 0;
+  }
+
+  .semester-block {
+    padding: 12px;
+  }
+
+  .btn {
+    padding: 10px 16px;
+    font-size: 13px;
   }
 }

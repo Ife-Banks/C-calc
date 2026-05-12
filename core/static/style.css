@@ -161,3 +161,34 @@ button:active {
     color: #2e7d32;
     border: 1px solid #c8e6c9;
 }
+
+@media (max-width: 768px) {
+    body {
+        padding: 12px;
+    }
+
+    .login-container {
+        padding: 28px 24px;
+        max-width: 100%;
+    }
+
+    .login-container h2 {
+        font-size: 24px;
+        margin-bottom: 24px;
+    }
+
+    .input-group input {
+        padding: 11px 14px;
+    }
+
+    button {
+        padding: 12px;
+        font-size: 15px;
+    }
+
+    .links {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+}
