@@ -18,6 +18,9 @@ urlpatterns = [
     # Delete course
     path('delete-course/<int:course_id>/', views.delete_course, name='delete_course'),
 
+    # Bulk import
+    path('bulk-import/', views.bulk_import_courses, name='bulk_import_courses'),
+
     # OTP SYSTEM
     path('otp-request/', views.otp_request, name='otp_request'),
     path('otp-verify/', views.otp_verify, name='otp_verify'),

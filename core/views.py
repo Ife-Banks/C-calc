@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect
 
 import random
 import time
+import csv
 
 from .models import Student, Level, Semester, Course
 
@@ -249,6 +250,77 @@ def delete_course(request, course_id):
             messages.success(request, "Course deleted successfully ✅")
         except Course.DoesNotExist:
             messages.error(request, "Course not found ❌")
+
+    return redirect("dashboard")
+
+
+# =========================
+# 🔹 BULK IMPORT COURSES FROM CSV
+# =========================
+def bulk_import_courses(request):
+    if not request.user.is_authenticated:
+        return redirect("login")
+
+    if request.method == "POST":
+        csv_file = request.FILES.get('csv_file')
+
+        if not csv_file.name.endswith('.csv'):
+            messages.error(request, "Please upload a CSV file")
+            return redirect("dashboard")
+
+        student = Student.objects.get(user=request.user)
+
+        try:
+            decoded_file = csv_file.read().decode('utf-8').splitlines()
+            reader = csv.DictReader(decoded_file)
+
+            count = 0
+            errors = []
+
+            for row_num, row in enumerate(reader, start=2):
+                try:
+                    title = row.get('title', '').strip()
+                    code = row.get('code', '').strip()
+                    unit = int(row.get('unit', 0))
+                    grade = row.get('grade', '').strip().upper()
+                    level_num = int(row.get('level', 0))
+                    semester_name = row.get('semester', '').strip()
+
+                    if not all([title, code, grade, level_num, semester_name]):
+                        errors.append(f"Row {row_num}: Missing required fields")
+                        continue
+
+                    level, _ = Level.objects.get_or_create(
+                        student=student,
+                        level=level_num,
+                        defaults={'gpa': 0, 'locked': False}
+                    )
+
+                    semester, _ = Semester.objects.get_or_create(
+                        level=level,
+                        name=semester_name,
+                        defaults={'gpa': 0}
+                    )
+
+                    Course.objects.create(
+                        semester=semester,
+                        title=title,
+                        code=code,
+                        unit=unit,
+                        grade=grade
+                    )
+                    count += 1
+
+                except Exception as e:
+                    errors.append(f"Row {row_num}: {str(e)}")
+
+            if count > 0:
+                messages.success(request, f"{count} courses imported successfully")
+            if errors:
+                messages.warning(request, f"{len(errors)} rows had errors: {', '.join(errors[:5])}{'...' if len(errors) > 5 else ''}")
+
+        except Exception as e:
+            messages.error(request, f"Error reading CSV: {str(e)}")
 
     return redirect("dashboard")
 

@@ -178,64 +178,98 @@
         <div id="add-course" class="tab-content">
             <div class="content-card">
                 <h3><i class="fas fa-plus-circle"></i> Add New Course</h3>
-                <form method="POST" action="{% url 'add_course' %}" id="courseForm">
-                    {% csrf_token %}
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Course Title</label>
-                            <input type="text" name="title" placeholder="e.g. Introduction to Physics" required>
+
+                <div class="toggle-mode">
+                    <button class="toggle-btn active" onclick="toggleAddMode('single')">Single Course</button>
+                    <button class="toggle-btn" onclick="toggleAddMode('bulk')">Bulk Import (CSV)</button>
+                </div>
+
+                <div id="single-course-form">
+                    <form method="POST" action="{% url 'add_course' %}" id="courseForm">
+                        {% csrf_token %}
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Course Title</label>
+                                <input type="text" name="title" placeholder="e.g. Introduction to Physics" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Course Code</label>
+                                <input type="text" name="code" placeholder="e.g. PHY101" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Credit Unit</label>
+                                <select name="unit" required>
+                                    <option value="">Select Unit</option>
+                                    <option value="1">1 Unit</option>
+                                    <option value="2">2 Units</option>
+                                    <option value="3">3 Units</option>
+                                    <option value="4">4 Units</option>
+                                    <option value="5">5 Units</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Grade</label>
+                                <select name="grade" required>
+                                    <option value="">Select Grade</option>
+                                    <option value="A">A (Excellent)</option>
+                                    <option value="B">B (Very Good)</option>
+                                    <option value="C">C (Good)</option>
+                                    <option value="D">D (Pass)</option>
+                                    <option value="E">E (Fair)</option>
+                                    <option value="F">F (Fail)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Level</label>
+                                <select name="level" required>
+                                    <option value="">Select Level</option>
+                                    <option value="100">100 Level</option>
+                                    <option value="200">200 Level</option>
+                                    <option value="300">300 Level</option>
+                                    <option value="400">400 Level</option>
+                                    <option value="500">500 Level</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Semester</label>
+                                <select name="semester" required>
+                                    <option value="">Select Semester</option>
+                                    <option value="First">First Semester</option>
+                                    <option value="Second">Second Semester</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Course Code</label>
-                            <input type="text" name="code" placeholder="e.g. PHY101" required>
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <i class="fas fa-plus"></i> Add Course
+                        </button>
+                    </form>
+                </div>
+
+                <div id="bulk-import-form" style="display: none;">
+                    <div class="csv-info">
+                        <p><strong>CSV Format:</strong> title, code, unit, grade, level, semester</p>
+                        <p><strong>Example:</strong></p>
+                        <div class="csv-example">
+                            title,code,unit,grade,level,semester<br>
+                            Physics 101,PHY101,3,A,100,First<br>
+                            Mathematics,MAT101,4,B,100,First<br>
+                            Chemistry,CHM101,3,C,100,Second
                         </div>
-                        <div class="form-group">
-                            <label>Credit Unit</label>
-                            <select name="unit" required>
-                                <option value="">Select Unit</option>
-                                <option value="1">1 Unit</option>
-                                <option value="2">2 Units</option>
-                                <option value="3">3 Units</option>
-                                <option value="4">4 Units</option>
-                                <option value="5">5 Units</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Grade</label>
-                            <select name="grade" required>
-                                <option value="">Select Grade</option>
-                                <option value="A">A (Excellent)</option>
-                                <option value="B">B (Very Good)</option>
-                                <option value="C">C (Good)</option>
-                                <option value="D">D (Pass)</option>
-                                <option value="E">E (Fair)</option>
-                                <option value="F">F (Fail)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Level</label>
-                            <select name="level" required>
-                                <option value="">Select Level</option>
-                                <option value="100">100 Level</option>
-                                <option value="200">200 Level</option>
-                                <option value="300">300 Level</option>
-                                <option value="400">400 Level</option>
-                                <option value="500">500 Level</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Semester</label>
-                            <select name="semester" required>
-                                <option value="">Select Semester</option>
-                                <option value="First">First Semester</option>
-                                <option value="Second">Second Semester</option>
-                            </select>
-                        </div>
+                        <button class="btn btn-secondary" onclick="downloadCSVTemplate()">
+                            <i class="fas fa-download"></i> Download CSV Template
+                        </button>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-full">
-                        <i class="fas fa-plus"></i> Add Course
-                    </button>
-                </form>
+                    <form method="POST" action="{% url 'bulk_import_courses' %}" enctype="multipart/form-data" id="bulkForm">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>Select CSV File</label>
+                            <input type="file" name="csv_file" accept=".csv" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <i class="fas fa-upload"></i> Import Courses
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -281,6 +315,24 @@
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             event.target.closest('.tab-btn').classList.add('active');
+        }
+
+        function toggleAddMode(mode) {
+            document.getElementById('single-course-form').style.display = mode === 'single' ? 'block' : 'none';
+            document.getElementById('bulk-import-form').style.display = mode === 'bulk' ? 'block' : 'none';
+            document.querySelectorAll('.toggle-mode .toggle-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function downloadCSVTemplate() {
+            const csv = 'title,code,unit,grade,level,semester\nIntroduction to Physics,PHY101,3,A,100,First\nMathematics I,MAT101,4,B,100,First\nGeneral Chemistry,CHM101,3,C,100,Second\nIntroduction to Biology,BIO101,3,D,100,Second';
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'cgpa_courses_template.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
         }
 
         function showToast(message, type) {

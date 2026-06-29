@@ -415,6 +415,68 @@ body {
   transform: translateY(-2px);
 }
 
+.toggle-mode {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.toggle-mode .toggle-btn {
+  flex: 1;
+  padding: 12px 20px;
+  background: var(--bg);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: inset 4px 4px 10px var(--shadow-dark), inset -4px -4px 10px var(--shadow-light);
+}
+
+.toggle-mode .toggle-btn:hover {
+  color: var(--primary);
+}
+
+.toggle-mode .toggle-btn.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 4px 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.csv-info {
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: inset 4px 4px 10px var(--shadow-dark), inset -4px -4px 10px var(--shadow-light);
+}
+
+.csv-info p {
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.csv-info .csv-example {
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 12px 0;
+  box-shadow: inset 2px 2px 6px var(--shadow-dark), inset -2px -2px 6px var(--shadow-light);
+}
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  box-shadow: 4px 4px 10px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
+}
+
 .btn-full {
   width: 100%;
   margin-top: 8px;
