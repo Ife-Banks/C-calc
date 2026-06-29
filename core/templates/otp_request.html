@@ -3,36 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTP Request</title>
+    <title>Forgot Password - CGPA Calc</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-
     <div class="login-container">
-        <h2>Request OTP</h2>
+        <div class="login-icon">
+            <i class="fas fa-key"></i>
+        </div>
+        <h2>Forgot Password?</h2>
+        <p class="subtitle">Enter your email to receive an OTP</p>
 
         {% if error %}
-            <p style="color:red; text-align:center;">{{ error }}</p>
+            <div class="message error">{{ error }}</div>
         {% endif %}
 
         <form method="POST">
             {% csrf_token %}
 
             <div class="input-group">
-                <label>Email</label>
+                <label>Email Address</label>
                 <input type="email" name="email" placeholder="Enter your email" required>
             </div>
 
-            <button type="submit">Send OTP</button>
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-paper-plane"></i> Send OTP
+            </button>
         </form>
 
         <div class="links">
-            <a href="{% url 'login' %}">Back to Login</a>
+            <a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Back to Login</a>
         </div>
     </div>
-
 </body>
 </html>

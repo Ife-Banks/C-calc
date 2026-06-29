@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - CGPA Calculator</title>
+    <title>Register - CGPA Calc</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
     <div class="login-container">
-        <div style="text-align: center; margin-bottom: 20px;">
-            <i class="fas fa-graduation-cap" style="font-size: 40px; color: #6366f1;"></i>
+        <div class="login-icon">
+            <i class="fas fa-user-plus"></i>
         </div>
         <h2>Create Account</h2>
+        <p class="subtitle">Join CGPA Calc today</p>
 
         {% if messages %}
             <div class="messages">
@@ -59,11 +59,13 @@
                 </div>
             </div>
 
-            <button type="submit">Register</button>
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-user-plus"></i> Register
+            </button>
         </form>
 
         <div class="links">
-            <a href="{% url 'login' %}">Already have an account? Login</a>
+            <a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Already have an account? Login</a>
         </div>
     </div>
 

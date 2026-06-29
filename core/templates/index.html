@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - CGPA Calculator</title>
+    <title>Login - CGPA Calc</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
     <div class="login-container">
-        <div style="text-align: center; margin-bottom: 20px;">
-            <i class="fas fa-graduation-cap" style="font-size: 40px; color: #6366f1;"></i>
+        <div class="login-icon">
+            <i class="fas fa-graduation-cap"></i>
         </div>
         <h2>Welcome Back</h2>
+        <p class="subtitle">Sign in to continue to your dashboard</p>
 
         {% if messages %}
             <div class="messages">
@@ -43,12 +44,14 @@
                 </div>
             </div>
 
-            <button type="submit"><i class="fas fa-sign-in-alt"></i> Login</button>
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
         </form>
 
         <div class="links">
-            <a href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Create account</a>
-            <a href="{% url 'otp_request' %}"><i class="fas fa-key"></i> Forgot password?</a>
+            <a href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Create Account</a>
+            <a href="{% url 'otp_request' %}"><i class="fas fa-key"></i> Forgot Password?</a>
         </div>
     </div>
 

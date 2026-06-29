@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - CGPA Calculator</title>
+    <title>Dashboard - CGPA Calc</title>
     <link rel="stylesheet" href="{% static 'dashboard.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -12,78 +12,172 @@
 </head>
 <body>
 
-    <nav class="top-nav">
-        <div class="brand">CGPA<span>Calc</span></div>
-        <div class="user-area">
+    <nav class="top-bar">
+        <div class="logo">CGPA Calc</div>
+        <div class="user-info">
+            <div class="avatar">{{ username|make_list|first|upper }}</div>
             <span class="name">{{ username }}</span>
-            <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            <button class="logout-btn" onclick="window.location.href='{% url 'logout' %}'">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+            </button>
         </div>
     </nav>
 
     <div class="toast-container" id="toastContainer"></div>
 
-    <main class="main">
-        <div class="page-header">
-            <h1>Welcome, {{ student.full_name|default:username }}</h1>
+    <div class="main-container">
+
+        <div class="hero-card">
+            <div class="greeting">Welcome back,</div>
+            <div class="name">{{ student.full_name|default:username }}</div>
+            <div class="cgpa-display">
+                <div class="cgpa-circle">
+                    <span class="label">CGPA</span>
+                    <span class="value">{{ cgpa|floatformat:2 }}</span>
+                </div>
+                <div class="cgpa-details">
+                    <div class="remark">{{ remark }}</div>
+                    <div class="sub">{{ total_units }} credit units completed</div>
+                </div>
+            </div>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="label">Current CGPA</div>
+        <div class="stats-row">
+            <div class="stat-pill">
+                <div class="icon purple"><i class="fas fa-graduation-cap"></i></div>
                 <div class="value">{{ cgpa|floatformat:2 }}</div>
-                <div class="sub">{{ remark }}</div>
+                <div class="label">Current CGPA</div>
             </div>
-            <div class="stat-card">
-                <div class="label">Total Units</div>
-                <div class="value">{{ total_units }}</div>
-                <div class="sub">Courses completed</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">Total Courses</div>
+            <div class="stat-pill">
+                <div class="icon pink"><i class="fas fa-book"></i></div>
                 <div class="value">{{ courses.count }}</div>
-                <div class="sub">Registered courses</div>
+                <div class="label">Courses Taken</div>
+            </div>
+            <div class="stat-pill">
+                <div class="icon orange"><i class="fas fa-layer-group"></i></div>
+                <div class="value">{{ total_units }}</div>
+                <div class="label">Total Units</div>
             </div>
         </div>
 
-        <div class="card" id="profile">
-            <div class="card-header">
-                <h3><i class="fas fa-user-circle"></i> Student Profile</h3>
-            </div>
-            <div class="card-body">
-                <form method="POST" action="{% url 'save_student' %}" id="profileForm">
-                    {% csrf_token %}
-                    <div class="profile-grid">
-                        <div class="form-group">
-                            <label>Full Name</label>
-                            <input type="text" name="full_name" value="{{ student.full_name }}">
-                        </div>
-                        <div class="form-group">
-                            <label>Matric Number</label>
-                            <input type="text" name="matric_number" value="{{ student.matric_number }}">
-                        </div>
-                        <div class="form-group">
-                            <label>Faculty</label>
-                            <input type="text" name="faculty" value="{{ student.faculty }}">
-                        </div>
-                        <div class="form-group">
-                            <label>Department</label>
-                            <input type="text" name="department" value="{{ student.department }}">
-                        </div>
-                        <div class="form-group">
-                            <label>Program</label>
-                            <input type="text" name="program" value="{{ student.program }}">
-                        </div>
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('overview')">
+                <i class="fas fa-home"></i> Overview
+            </button>
+            <button class="tab-btn" onclick="switchTab('courses')">
+                <i class="fas fa-book-open"></i> My Courses
+            </button>
+            <button class="tab-btn" onclick="switchTab('add-course')">
+                <i class="fas fa-plus-circle"></i> Add Course
+            </button>
+            <button class="tab-btn" onclick="switchTab('profile')">
+                <i class="fas fa-user-circle"></i> Profile
+            </button>
+        </div>
+
+        <div id="overview" class="tab-content active">
+            <div class="content-card">
+                <h3><i class="fas fa-chart-line"></i> Academic Overview</h3>
+
+                {% if not courses %}
+                    <div class="empty-state">
+                        <i class="fas fa-books"></i>
+                        <p>No courses yet. Go to "Add Course" to get started!</p>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="margin-top: 20px;">Save Profile</button>
-                </form>
+                {% else %}
+                    <div class="courses-wrapper">
+                        {% for level_num, semesters in levels_data.items %}
+                            <div class="level-block">
+                                <div class="level-header">Level {{ level_num }}</div>
+                                <div class="semester-pair">
+                                    {% for sem_name, sem_data in semesters.items %}
+                                        {% if sem_data.courses %}
+                                            <div class="semester-card">
+                                                <h5>
+                                                    <span>{{ sem_name|title }} Semester</span>
+                                                    <span class="sgpa">SGPA: {{ sem_data.gpa|floatformat:2 }}</span>
+                                                </h5>
+                                                {% for course in sem_data.courses %}
+                                                    <div class="course-row">
+                                                        <span class="title">{{ course.title }}</span>
+                                                        <span class="code">{{ course.code }}</span>
+                                                        <span class="unit">{{ course.unit }}</span>
+                                                        <span class="grade">{{ course.grade }}</span>
+                                                        <form method="POST" action="{% url 'delete_course' course.id %}" style="display:inline;">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="delete-btn" onclick="return confirm('Delete this course?')">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button class="btn btn-download btn-full" style="margin-top: 20px;" onclick="downloadPDF()">
+                        <i class="fas fa-download"></i> Download Report
+                    </button>
+                {% endif %}
             </div>
         </div>
 
-        <div class="card" id="add-course">
-            <div class="card-header">
-                <h3><i class="fas fa-plus"></i> Add New Course</h3>
+        <div id="courses" class="tab-content">
+            <div class="content-card">
+                <h3><i class="fas fa-book-open"></i> My Courses</h3>
+
+                {% if not courses %}
+                    <div class="empty-state">
+                        <i class="fas fa-book"></i>
+                        <p>No courses added yet. Add your first course!</p>
+                    </div>
+                {% else %}
+                    <div class="courses-wrapper">
+                        {% for level_num, semesters in levels_data.items %}
+                            <div class="level-block">
+                                <div class="level-header">Level {{ level_num }}</div>
+                                <div class="semester-pair">
+                                    {% for sem_name, sem_data in semesters.items %}
+                                        {% if sem_data.courses %}
+                                            <div class="semester-card">
+                                                <h5>
+                                                    <span>{{ sem_name|title }} Semester</span>
+                                                    <span class="sgpa">SGPA: {{ sem_data.gpa|floatformat:2 }}</span>
+                                                </h5>
+                                                {% for course in sem_data.courses %}
+                                                    <div class="course-row">
+                                                        <span class="title">{{ course.title }}</span>
+                                                        <span class="code">{{ course.code }}</span>
+                                                        <span class="unit">{{ course.unit }}</span>
+                                                        <span class="grade">{{ course.grade }}</span>
+                                                        <form method="POST" action="{% url 'delete_course' course.id %}" style="display:inline;">
+                                                            {% csrf_token %}
+                                                            <button type="submit" class="delete-btn" onclick="return confirm('Delete this course?')">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button class="btn btn-download btn-full" style="margin-top: 20px;" onclick="downloadPDF()">
+                        <i class="fas fa-download"></i> Download Report
+                    </button>
+                {% endif %}
             </div>
-            <div class="card-body">
+        </div>
+
+        <div id="add-course" class="tab-content">
+            <div class="content-card">
+                <h3><i class="fas fa-plus-circle"></i> Add New Course</h3>
                 <form method="POST" action="{% url 'add_course' %}" id="courseForm">
                     {% csrf_token %}
                     <div class="form-grid">
@@ -138,65 +232,57 @@
                             </select>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-full">Add Course</button>
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="fas fa-plus"></i> Add Course
+                    </button>
                 </form>
             </div>
         </div>
 
-        <div class="card" id="courses">
-            <div class="card-header">
-                <h3><i class="fas fa-book-open"></i> My Courses</h3>
-                <button class="btn btn-primary" onclick="downloadPDF()"><i class="fas fa-download"></i> Download PDF</button>
-            </div>
-            <div class="card-body">
-                {% if not courses %}
-                    <div class="empty-state">
-                        <i class="fas fa-inbox"></i>
-                        <p>No courses added yet. Add your first course above.</p>
-                    </div>
-                {% else %}
-                    {% for level_num, semesters in levels_data.items %}
-                        <div class="level-section">
-                            <div class="level-header">
-                                <h4>Level {{ level_num }}</h4>
-                            </div>
-                            <div class="semester-row">
-                                {% for sem_name, sem_data in semesters.items %}
-                                    {% if sem_data.courses %}
-                                        <div class="semester-block">
-                                            <h5>
-                                                <span>{{ sem_name|title }} Semester</span>
-                                                <span class="sgpa">SGPA: {{ sem_data.gpa|floatformat:2 }}</span>
-                                            </h5>
-                                            <ul class="course-list">
-                                                {% for course in sem_data.courses %}
-                                                    <li class="course-item">
-                                                        <span class="title">{{ course.title }}</span>
-                                                        <span class="code">{{ course.code }}</span>
-                                                        <span class="unit">{{ course.unit }}</span>
-                                                        <span class="grade">{{ course.grade }}</span>
-                                                        <form method="POST" action="{% url 'delete_course' course.id %}" style="display:inline;">
-                                                            {% csrf_token %}
-                                                            <button type="submit" class="remove-btn" onclick="return confirm('Delete this course?')">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
+        <div id="profile" class="tab-content">
+            <div class="content-card">
+                <h3><i class="fas fa-user-circle"></i> Student Profile</h3>
+                <form method="POST" action="{% url 'save_student' %}" id="profileForm">
+                    {% csrf_token %}
+                    <div class="profile-grid">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" name="full_name" value="{{ student.full_name }}">
                         </div>
-                    {% endfor %}
-                {% endif %}
+                        <div class="form-group">
+                            <label>Matric Number</label>
+                            <input type="text" name="matric_number" value="{{ student.matric_number }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Faculty</label>
+                            <input type="text" name="faculty" value="{{ student.faculty }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Department</label>
+                            <input type="text" name="department" value="{{ student.department }}">
+                        </div>
+                        <div class="form-group">
+                            <label>Program</label>
+                            <input type="text" name="program" value="{{ student.program }}">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Profile
+                    </button>
+                </form>
             </div>
         </div>
 
-    </main>
+    </div>
 
     <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.closest('.tab-btn').classList.add('active');
+        }
+
         function showToast(message, type) {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -205,17 +291,6 @@
             container.appendChild(toast);
             setTimeout(() => toast.remove(), 3000);
         }
-
-        document.getElementById('profileForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            fetch(this.action, {
-                method: 'POST',
-                body: new FormData(this),
-                headers: {'X-Requested-With': 'XMLHttpRequest'}
-            }).then(() => {
-                showToast('Profile saved successfully!', 'success');
-            });
-        });
 
         document.getElementById('courseForm').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -226,7 +301,18 @@
             }).then(() => {
                 showToast('Course added successfully!', 'success');
                 this.reset();
-                setTimeout(() => location.reload(), 500);
+                setTimeout(() => location.reload(), 800);
+            });
+        });
+
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            fetch(this.action, {
+                method: 'POST',
+                body: new FormData(this),
+                headers: {'X-Requested-With': 'XMLHttpRequest'}
+            }).then(() => {
+                showToast('Profile saved!', 'success');
             });
         });
 
@@ -236,8 +322,8 @@
         function downloadPDF() {
             const doc = new jsPDF();
 
-            doc.setFontSize(18);
-            doc.text("CGPA REPORT", 105, 20, { align: "center" });
+            doc.setFontSize(20);
+            doc.text("CGPA Academic Report", 105, 20, { align: "center" });
 
             doc.setFontSize(12);
             doc.text("Name: {{ student.full_name }}", 20, 35);
@@ -265,7 +351,7 @@
                 body: tableData,
                 startY: 95,
                 styles: { fontSize: 10 },
-                headStyles: { fillColor: [99, 102, 241] },
+                headStyles: { fillColor: [124, 58, 237] },
                 alternateRowStyles: { fillColor: [248, 250, 252] }
             });
 
