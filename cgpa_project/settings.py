@@ -20,8 +20,8 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'c-calc.onrender.com').split(','
 
 # CSRF fix for production
 CSRF_TRUSTED_ORIGINS = [
-    'https://c-calc.onrender.com',
-    'http://c-calc.onrender.com',
+    'https://c-calc-r7dl.onrender.com',
+    'http://c-calc-r7dl.onrender.com',
 ]
 
 
