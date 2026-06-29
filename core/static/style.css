@@ -6,16 +6,15 @@
 }
 
 :root {
-    --bg: #eef2f7;
+    --bg: #f1f5f9;
     --surface: #ffffff;
-    --primary: #7c3aed;
-    --primary-light: #a78bfa;
-    --accent: #f472b6;
-    --text: #374151;
-    --text-muted: #9ca3af;
-    --text-dark: #1f2937;
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --text: #334155;
+    --text-muted: #94a3b8;
+    --text-dark: #0f172a;
     --shadow-light: #ffffff;
-    --shadow-dark: #c5cad4;
+    --shadow-dark: #c8d0dc;
     --success: #10b981;
     --danger: #ef4444;
     --radius-lg: 24px;
@@ -60,10 +59,7 @@ body {
 
 .login-icon i {
     font-size: 48px;
-    background: linear-gradient(145deg, var(--primary), var(--accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--primary);
 }
 
 .login-container h2 {
@@ -144,7 +140,7 @@ body {
 button.submit-btn {
     width: 100%;
     padding: 16px;
-    background: linear-gradient(145deg, var(--primary), var(--primary-light));
+    background: var(--primary);
     border: none;
     color: white;
     font-size: 15px;
@@ -152,7 +148,7 @@ button.submit-btn {
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: all 0.3s;
-    box-shadow: 8px 8px 20px rgba(124, 58, 237, 0.35), -8px -8px 20px rgba(255, 255, 255, 0.5);
+    box-shadow: 8px 8px 20px rgba(99, 102, 241, 0.35), -8px -8px 20px rgba(255, 255, 255, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -161,13 +157,14 @@ button.submit-btn {
 }
 
 button.submit-btn:hover {
+    background: var(--primary-hover);
     transform: translateY(-2px);
-    box-shadow: 10px 10px 24px rgba(124, 58, 237, 0.45), -10px -10px 28px rgba(255, 255, 255, 0.6);
+    box-shadow: 10px 10px 24px rgba(99, 102, 241, 0.45), -10px -10px 28px rgba(255, 255, 255, 0.6);
 }
 
 button.submit-btn:active {
     transform: translateY(0);
-    box-shadow: inset 4px 4px 10px rgba(124, 58, 237, 0.4);
+    box-shadow: inset 4px 4px 10px rgba(99, 102, 241, 0.4);
 }
 
 .links {
@@ -185,7 +182,7 @@ button.submit-btn:active {
 }
 
 .links a:hover {
-    color: var(--primary-light);
+    color: var(--primary-hover);
 }
 
 .messages {
@@ -199,16 +196,15 @@ button.submit-btn:active {
     font-size: 14px;
     text-align: center;
     font-weight: 500;
+    color: white;
 }
 
 .message.error {
-    background: linear-gradient(145deg, var(--danger), #f87171);
-    color: white;
+    background: var(--danger);
 }
 
 .message.success {
-    background: linear-gradient(145deg, var(--success), #34d399);
-    color: white;
+    background: var(--success);
 }
 
 /* ===== MOBILE RESPONSIVE ===== */
